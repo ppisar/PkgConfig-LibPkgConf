@@ -334,6 +334,10 @@ _package_from_file(self, filename)
     FILE *fp;
     pkgconf_pkg_t *package;
   CODE:
+#if LIBPKGCONF_VERSION >= 20500
+    package = pkgconf_pkg_new_from_path(&self->client, filename, 0);
+    RETVAL = PTR2IV(package);
+#else
     fp = fopen(filename, "r");
     if(fp != NULL) {
 #if LIBPKGCONF_VERSION >= 10900
@@ -344,6 +348,7 @@ _package_from_file(self, filename)
       RETVAL = PTR2IV(package);
     } else
       RETVAL = 0;
+#endif
   OUTPUT:
     RETVAL
 
